@@ -1,0 +1,12 @@
+[package]
+name = "ip_register"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.19"
+diesel = { version = "1.4.1", features = ["postgres", "chrono"] }
+dotenv = "0.15.0"
+regex = "1.5.6"
