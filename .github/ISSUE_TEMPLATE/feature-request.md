@@ -1,20 +1,21 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Feature Request
+about: 新規機能提案
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**関連するIssue/Pull Requests**
+## 関連するIssue/Pull Requests
 
-**したいこと**
 
-**したいことの実現方法**
+## したいこと
 
-**実現のために行う必要があること**
+## したいことの実現方法
 
-**懸念点**
+## 実現のために行う必要があること
 
-**補足**
+## 懸念点
+
+## 補足
