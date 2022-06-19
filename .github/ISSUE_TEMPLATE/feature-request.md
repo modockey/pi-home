@@ -9,7 +9,6 @@ assignees: ''
 
 ## 関連するIssue/Pull Requests
 
-
 ## したいこと
 
 ## したいことの実現方法
