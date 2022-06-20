@@ -35,4 +35,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-ALTER TABLE ipv4_history add last_checked_at timestamptz not null default TIMESTAMP WITH TIME ZONE '2022-06-21 00:00:00+09';
+create table ipv4_history (
+  id serial,
+  ipv4_address varchar(15) not null,
+  effective_flg boolean not null,
+  created_at timestamptz not null,
+  updated_at timestamptz not null,
+  last_checked_at timestamptz not null,
+  PRIMARY KEY (id)
+);
