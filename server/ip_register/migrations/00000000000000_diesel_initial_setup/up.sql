@@ -35,4 +35,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-ALTER TABLE ipv4_history add last_checked_at timestamptz not null;
+ALTER TABLE ipv4_history add last_checked_at timestamptz not null default TIMESTAMP WITH TIME ZONE '2022-06-21 00:00:00+09';
