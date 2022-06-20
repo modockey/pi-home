@@ -10,5 +10,7 @@ release-systemd:
 release: release-build release-systemd
 	sudo mkdir -p /usr/local/bin/ip_register
 	sudo cp ./target/release/ip_register /usr/local/bin/ip_register/
+	systemctl start ip_register.service
+	systemctl enable ip_register.service
 	systemctl start ip_register.timer
 	systemctl enable ip_register.timer
