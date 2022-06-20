@@ -1,0 +1,10 @@
+[Unit]
+Description=run ip_register
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/ip_register/ip_register
+EnvironmentFile=/etc/sysconfig/ip_register_env
+
+[Install]
+WantedBy=multi-user.target
