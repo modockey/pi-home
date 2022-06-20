@@ -14,6 +14,7 @@ pub struct Ipv4Record {
   effective_flg: bool,
   created_at: DateTime<Utc>,
   updated_at: DateTime<Utc>,
+  last_checked_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Debug)]
@@ -23,6 +24,7 @@ pub struct NewIpV4Record {
   effective_flg: bool,
   created_at: DateTime<Utc>,
   updated_at: DateTime<Utc>,
+  last_checked_at: DateTime<Utc>,
 }
 
 pub fn get_effective_records(conn: &diesel::PgConnection) -> Vec<Ipv4Record> {
@@ -40,6 +42,7 @@ pub fn insert_record(conn: &diesel::PgConnection, address: impl Into<String>) ->
     effective_flg: true,
     created_at: now,
     updated_at: now,
+    last_checked_at: now,
   };
   insert_into(ipv4_history)
     .values(new_ipv4_record)
@@ -50,6 +53,14 @@ pub fn insert_record(conn: &diesel::PgConnection, address: impl Into<String>) ->
 pub fn disable_record(conn: &diesel::PgConnection, target_id: &i32) -> Ipv4Record {
   update(ipv4_history.find(target_id))
     .set((effective_flg.eq(false), updated_at.eq(Utc::now())))
+    .get_result::<Ipv4Record>(conn)
+    .expect(&format!("Error Update Record {}", target_id))
+}
+
+pub fn update_last_checked_at(conn: &diesel::PgConnection, target_id: &i32) -> Ipv4Record {
+  let now = Utc::now();
+  update(ipv4_history.find(target_id))
+    .set((last_checked_at.eq(now), updated_at.eq(now)))
     .get_result::<Ipv4Record>(conn)
     .expect(&format!("Error Update Record {}", target_id))
 }

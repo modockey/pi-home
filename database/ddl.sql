@@ -6,5 +6,6 @@ create table ipv4_history (
   effective_flg boolean not null,
   created_at timestamptz not null,
   updated_at timestamptz not null,
+  last_checked_at timestamptz not null,
   PRIMARY KEY (id)
 );
