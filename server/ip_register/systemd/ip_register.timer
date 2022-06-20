@@ -3,6 +3,7 @@ Description=timer ip_register
 
 [Timer]
 OnUnitActiveSec=5m
+Unit=ip_register.service
 
 [Install]
 WantedBy=timers.target
