@@ -38,6 +38,7 @@ fn main() {
     }
 
     if ipv4_address == effective_records[0].ipv4_address {
+        update_last_checked_at(&conn, &effective_records[0].id);
         return;
     }
     disable_record(&conn, &effective_records[0].id);
