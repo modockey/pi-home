@@ -15,7 +15,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "serve -s build",
+    "ps2-start": "pm2 start \"serve -s build -l 50080\" --name my-react-app",
+    "ps2-restart": "pm2 restart \"serve -s build -l 50080\" --name my-react-app",
+    "ps2-release": "npm run build && npm run ps2-restart"
   },
   "eslintConfig": {
     "extends": [
