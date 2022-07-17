@@ -1,0 +1,37 @@
+swagger: "2.0"
+info:
+  description: "home-management APIs"
+  version: "1.0.0"
+  title: "home-management"
+  contact:
+    email: "akira.nakagawa.kmdk@gmail.com"
+host: "localhost:50001"
+basePath: "/v1"
+tags:
+  - name: "IP"
+paths:
+  /ip:
+    get:
+      tags:
+        - "IP"
+      summary: "Get Global IPv4 address of the system"
+      description: "Get Global IPv4 address of the system"
+      operationId: "getIP"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              IPv4_address:
+                type: "string"
+                format: "ipv4"
+              checked_at:
+                type: "string"
+                format: "date-time"
+        "500":
+          description: "Internal Server Error"
+        "501":
+          description: "Not Implemeneted"

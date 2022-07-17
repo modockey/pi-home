@@ -1,0 +1,48 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: akira.nakagawa.kmdk@gmail.com
+  description: home-management APIs
+  title: home-management
+  version: 1.0.0
+servers:
+- url: //localhost:50001/v1
+tags:
+- name: IP
+paths:
+  /ip:
+    get:
+      description: Get Global IPv4 address of the system
+      operationId: getIP
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getIP_200_response'
+          description: Success
+        "500":
+          content: {}
+          description: Internal Server Error
+        "501":
+          content: {}
+          description: Not Implemeneted
+      summary: Get Global IPv4 address of the system
+      tags:
+      - IP
+components:
+  schemas:
+    getIP_200_response:
+      example:
+        checked_at: 2000-01-23T04:56:07.000+00:00
+        IPv4_address: IPv4_address
+      properties:
+        IPv4_address:
+          format: ipv4
+          type: string
+        checked_at:
+          format: date-time
+          type: string
+      type: object
+x-original-swagger-version: "2.0"
+
