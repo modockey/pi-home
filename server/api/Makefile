@@ -10,10 +10,10 @@ release-build:
 
 .PHONY: release-systemd
 release-systemd:
-	sudo cp ./systemd/ip_register.service /etc/systemd/system/
+	sudo cp ./systemd/home-management-api.service /etc/systemd/system/
 
 release: release-build release-systemd
-	sudo mkdir -p /usr/local/bin/ip_register
+	sudo mkdir -p /usr/local/bin/home-management-api
 	sudo cp ./target/release/openapi-client /usr/local/bin/home-management-api/
 	systemctl start home-management-api.service
 	systemctl enable home-management-api.service
