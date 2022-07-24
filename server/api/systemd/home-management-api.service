@@ -1,0 +1,10 @@
+[Unit]
+Description=run home-management-api
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/home-management-api/openapi-client
+EnvironmentFile=/etc/sysconfig/home-management-api_env
+
+[Install]
+WantedBy=multi-user.target

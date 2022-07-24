@@ -3,3 +3,17 @@ generate:
     -i ./swagger.yaml \
     -g rust-server \
     -o .
+
+.PHONY: release-build
+release-build:
+	cargo build --release
+
+.PHONY: release-systemd
+release-systemd:
+	sudo cp ./systemd/ip_register.service /etc/systemd/system/
+
+release: release-build release-systemd
+	sudo mkdir -p /usr/local/bin/ip_register
+	sudo cp ./target/release/openapi-client /usr/local/bin/home-management-api/
+	systemctl start ip_register.service
+	systemctl enable ip_register.service

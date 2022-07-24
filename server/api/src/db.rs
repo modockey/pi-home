@@ -42,6 +42,7 @@ pub fn get_effective_records(conn: &PgConnection) -> Vec<Ipv4Record> {
   return ipv4_effective;
 }
 
+#[allow(dead_code)]
 pub fn exec_sql(file_path: &Path, conn: &PgConnection) -> Result<bool, String> {
   let display = file_path.display();
   let mut file = match File::open(&file_path) {
