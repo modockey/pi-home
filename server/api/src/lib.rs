@@ -1,11 +1,19 @@
-#![allow(missing_docs, trivial_casts, unused_variables, unused_mut, unused_imports, unused_extern_crates, non_camel_case_types)]
+#![allow(
+    missing_docs,
+    trivial_casts,
+    unused_variables,
+    unused_mut,
+    unused_imports,
+    unused_extern_crates,
+    non_camel_case_types
+)]
 
 use async_trait::async_trait;
 use futures::Stream;
+use serde::{Deserialize, Serialize};
 use std::error::Error;
-use std::task::{Poll, Context};
+use std::task::{Context, Poll};
 use swagger::{ApiError, ContextWrapper};
-use serde::{Serialize, Deserialize};
 
 type ServiceError = Box<dyn Error + Send + Sync + 'static>;
 
@@ -16,47 +24,45 @@ pub const API_VERSION: &'static str = "1.0.0";
 #[must_use]
 pub enum GetIPResponse {
     /// Success
-    Success
-    (models::GetIp200Response)
-    ,
+    Success(models::GetIp200Response),
     /// Internal Server Error
-    InternalServerError
-    ,
+    InternalServerError,
     /// Not Implemeneted
-    NotImplemeneted
+    NotImplemeneted,
 }
 
 /// API
 #[async_trait]
 pub trait Api<C: Send + Sync> {
-    fn poll_ready(&self, _cx: &mut Context) -> Poll<Result<(), Box<dyn Error + Send + Sync + 'static>>> {
+    fn poll_ready(
+        &self,
+        _cx: &mut Context,
+    ) -> Poll<Result<(), Box<dyn Error + Send + Sync + 'static>>> {
         Poll::Ready(Ok(()))
     }
 
     /// Get Global IPv4 address of the system
-    async fn get_ip(
-        &self,
-        context: &C) -> Result<GetIPResponse, ApiError>;
-
+    async fn get_ip(&self, context: &C) -> Result<GetIPResponse, ApiError>;
 }
 
 /// API where `Context` isn't passed on every API call
 #[async_trait]
 pub trait ApiNoContext<C: Send + Sync> {
-
-    fn poll_ready(&self, _cx: &mut Context) -> Poll<Result<(), Box<dyn Error + Send + Sync + 'static>>>;
+    fn poll_ready(
+        &self,
+        _cx: &mut Context,
+    ) -> Poll<Result<(), Box<dyn Error + Send + Sync + 'static>>>;
 
     fn context(&self) -> &C;
 
     /// Get Global IPv4 address of the system
-    async fn get_ip(
-        &self,
-        ) -> Result<GetIPResponse, ApiError>;
-
+    async fn get_ip(&self) -> Result<GetIPResponse, ApiError>;
 }
 
 /// Trait to extend an API to make it easy to bind it to a context.
-pub trait ContextWrapperExt<C: Send + Sync> where Self: Sized
+pub trait ContextWrapperExt<C: Send + Sync>
+where
+    Self: Sized,
 {
     /// Binds this API to a context.
     fn with_context(self: Self, context: C) -> ContextWrapper<Self, C>;
@@ -64,7 +70,7 @@ pub trait ContextWrapperExt<C: Send + Sync> where Self: Sized
 
 impl<T: Api<C> + Send + Sync, C: Clone + Send + Sync> ContextWrapperExt<C> for T {
     fn with_context(self: T, context: C) -> ContextWrapper<T, C> {
-         ContextWrapper::<T, C>::new(self, context)
+        ContextWrapper::<T, C>::new(self, context)
     }
 }
 
@@ -79,16 +85,11 @@ impl<T: Api<C> + Send + Sync, C: Clone + Send + Sync> ApiNoContext<C> for Contex
     }
 
     /// Get Global IPv4 address of the system
-    async fn get_ip(
-        &self,
-        ) -> Result<GetIPResponse, ApiError>
-    {
+    async fn get_ip(&self) -> Result<GetIPResponse, ApiError> {
         let context = self.context().clone();
         self.api().get_ip(&context).await
     }
-
 }
-
 
 #[cfg(feature = "client")]
 pub mod client;
