@@ -104,6 +104,7 @@ use std::error::Error;
 use swagger::ApiError;
 
 use crate::db;
+use crate::usecase;
 
 #[async_trait]
 impl<C> Api<C> for Server<C>
@@ -114,20 +115,14 @@ where
     async fn get_ip(&self, context: &C) -> Result<GetIPResponse, ApiError> {
         let context = context.clone();
         info!("get_ip() - X-Span-ID: {:?}", context.get().0.clone());
-        let conn = db::establish_connection();
-        let effective_records = db::get_effective_records(&conn);
-
-        if effective_records.len() == 0 {
-            return Err(ApiError("IPv4 record not found".into()));
+        match usecase::get_effective_ipv4_record() {
+            Ok(ipv4_record) => {
+                return Ok(openapi_client::GetIPResponse::Success(GetIp200Response {
+                    ipv4_address: Some(ipv4_record.ipv4_address.to_string()),
+                    checked_at: Some(ipv4_record.last_checked_at),
+                }))
+            }
+            Err(e) => Err(ApiError(e.into())),
         }
-
-        if effective_records.len() > 1 {
-            return Err(ApiError("Too many IPv4 records have been found".into()));
-        }
-
-        Ok(openapi_client::GetIPResponse::Success(GetIp200Response {
-            ipv4_address: Some(effective_records[0].ipv4_address.to_string()),
-            checked_at: Some(effective_records[0].last_checked_at),
-        }))
     }
 }

@@ -2,6 +2,12 @@ use chrono::{DateTime, Utc};
 
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
+use diesel::sql_query;
+
+use std::fs::File;
+use std::io::prelude::*;
+
+use std::path::Path;
 
 mod schema;
 use schema::ipv4_history::dsl::*;
@@ -18,7 +24,7 @@ pub fn establish_connection() -> PgConnection {
   PgConnection::establish(&database_url).expect(&format!("Error connecting to {}", database_url))
 }
 
-#[derive(Queryable)]
+#[derive(Clone, Debug, PartialEq, Queryable)]
 pub struct Ipv4Record {
   pub id: i32,
   pub ipv4_address: String,
@@ -34,4 +40,23 @@ pub fn get_effective_records(conn: &PgConnection) -> Vec<Ipv4Record> {
     .load::<Ipv4Record>(conn)
     .expect("Error loading ipv4_history");
   return ipv4_effective;
+}
+
+pub fn exec_sql(file_path: &Path, conn: &PgConnection) -> Result<bool, String> {
+  let display = file_path.display();
+  let mut file = match File::open(&file_path) {
+    Err(why) => panic!("couldn't open {}: {}", display, why),
+    Ok(file) => file,
+  };
+
+  let mut s = String::new();
+  match file.read_to_string(&mut s) {
+    Err(why) => panic!("couldn't read {}: {}", display, why),
+    Ok(_) => (),
+  };
+
+  match sql_query(s).execute(conn) {
+    Err(why) => return Err(format!("execute query: \n{}\nfailed\n{}", display, why).into()),
+    Ok(_) => return Ok(true),
+  };
 }

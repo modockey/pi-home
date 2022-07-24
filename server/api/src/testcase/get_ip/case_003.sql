@@ -1,5 +1,3 @@
-truncate table ipv4_history;
-
 insert into
   ipv4_history (
     id,
@@ -13,7 +11,7 @@ values
   (
     1,
     '111.111.111.111',
-    false,
+    true,
     '2022-01-01 00:00:00Z',
     '2022-01-01 00:00:00Z',
     '2022-01-01 00:00:00Z'

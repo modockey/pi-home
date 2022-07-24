@@ -1,5 +1,3 @@
-truncate table ipv4_history;
-
 insert into
   ipv4_history (
     id,
