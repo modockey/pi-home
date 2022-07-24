@@ -15,5 +15,5 @@ release-systemd:
 release: release-build release-systemd
 	sudo mkdir -p /usr/local/bin/ip_register
 	sudo cp ./target/release/openapi-client /usr/local/bin/home-management-api/
-	systemctl start ip_register.service
-	systemctl enable ip_register.service
+	systemctl start home-management-api.service
+	systemctl enable home-management-api.service
