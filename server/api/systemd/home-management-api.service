@@ -3,7 +3,7 @@ Description=run home-management-api
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/home-management-api/openapi-client
+ExecStart=/usr/local/bin/home-management-api/openapi_client
 Restart=always
 EnvironmentFile=/etc/sysconfig/home-management-api_env
 
