@@ -14,7 +14,7 @@ release-systemd:
 
 release: release-build release-systemd
 	systemctl stop home-management-api.service
-    sudo systemctl daemon-reload
+  sudo systemctl daemon-reload
 	sudo mkdir -p /usr/local/bin/home-management-api
 	sudo cp ./target/release/openapi_client /usr/local/bin/home-management-api/
 	systemctl start home-management-api.service
