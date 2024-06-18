@@ -5,9 +5,8 @@ insert into
     id,
     ipv4_address,
     effective_flg,
-    created_at,
+    last_checked_at created_at,
     updated_at,
-    last_checked_at
   )
 values
   (
@@ -15,8 +14,7 @@ values
     '111.111.111.111',
     false,
     '2022-01-01 00:00:00Z',
-    '2022-01-01 00:00:00Z',
-    '2022-01-01 00:00:00Z'
+    '2022-01-01 00:00:00Z' '2022-01-01 00:00:00Z',
   ),
   (
     2,
