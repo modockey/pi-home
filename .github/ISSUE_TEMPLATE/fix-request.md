@@ -1,6 +1,6 @@
 ---
 name: Fix Request
-about: 新規機能提案
+about: 機能修正提案
 title: ''
 labels: ''
 assignees: ''
