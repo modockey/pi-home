@@ -8,7 +8,7 @@
     "build": "tsc && vite build --base /pi-home/photo-award",
     "pm2-start": "pm2 start \"serve -s build -l 50080\" --name photo-award",
     "pm2-restart": "pm2 restart photo-award",
-    "release": "build && pm2-restart",
+    "release": "npm run build && npmrun pm2-restart",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
