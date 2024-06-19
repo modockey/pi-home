@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --base /pi-home/photo-award",
+    "build": "tsc && vite build --base /photo-award",
     "pm2-start": "pm2 start \"serve -s dist -l 50080\" --name photo-award",
     "pm2-restart": "pm2 restart photo-award",
     "release": "npm run build",
