@@ -1,2 +1,2 @@
 release:
-	npm run release
+	make -C ./frontend release

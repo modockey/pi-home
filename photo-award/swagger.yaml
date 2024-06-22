@@ -1,0 +1,28 @@
+swagger: "2.0"
+info:
+  title: "photo award"
+  description: "Web API Used By 'PHOTO-AWARD'"
+  version: "1.0.0"
+  contact:
+    email: "akira.nakagawa.kmdk@gmail.com"
+basePath: /v1
+tags:
+  - name: "system"
+paths:
+  /system/version:
+    get:
+      tags:
+        - "system"
+      description: Get API Version
+      responses:
+        200:
+          description: successful pet response
+          schema:
+            $ref: "#/definitions/Version"
+definitions:
+  Version:
+    type: object
+    properties:
+      version:
+        type: string
+        format: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
