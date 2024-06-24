@@ -29,15 +29,187 @@ func init() {
   },
   "basePath": "/v1",
   "paths": {
+    "/albums": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "get user's albums",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "user's albums",
+            "schema": {
+              "$ref": "#/definitions/Albums"
+            }
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "create new album",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "create new album success",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedError"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
+    "/albums/{id}": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "get specified album's info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "operationId": "getAlbumsById",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "User ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedError"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "upload picture to specified album",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "operationId": "postPhoto",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "User ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedError"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
+    "/authorize": {
+      "get": {
+        "description": "authorize user by id, password",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "authorizer"
+        ],
+        "parameters": [
+          {
+            "name": "login_info",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "aurhorize ok and returns token",
+            "schema": {
+              "properties": {
+                "schema": {
+                  "$ref": "#/definitions/Token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "authentification failed"
+          }
+        }
+      }
+    },
     "/system/version": {
       "get": {
         "description": "Get API Version",
+        "consumes": [
+          "application/json"
+        ],
         "tags": [
           "system"
         ],
         "responses": {
           "200": {
-            "description": "successful pet response",
+            "description": "api version",
             "schema": {
               "$ref": "#/definitions/Version"
             }
@@ -47,7 +219,49 @@ func init() {
     }
   },
   "definitions": {
+    "Album": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "photos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "url"
+          }
+        }
+      }
+    },
+    "Albums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Album"
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Token": {
+      "type": "string"
+    },
+    "UnauthorizedError": {
+      "description": "Authentication information is missing or invalid"
+    },
     "Version": {
+      "description": "API Version(SemVer)",
       "type": "object",
       "properties": {
         "version": {
@@ -57,9 +271,23 @@ func init() {
       }
     }
   },
+  "securityDefinitions": {
+    "Bearer": {
+      "description": "access token for api publicated by /authorize",
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+    }
+  },
   "tags": [
     {
       "name": "system"
+    },
+    {
+      "name": "album"
+    },
+    {
+      "name": "authorizer"
     }
   ]
 }`))
@@ -75,15 +303,187 @@ func init() {
   },
   "basePath": "/v1",
   "paths": {
+    "/albums": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "get user's albums",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "user's albums",
+            "schema": {
+              "$ref": "#/definitions/Albums"
+            }
+          },
+          "401": {
+            "description": "Authentication information is missing or invalid"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "create new album",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "create new album success",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication information is missing or invalid"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
+    "/albums/{id}": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "get specified album's info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "operationId": "getAlbumsById",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "User ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "401": {
+            "description": "Authentication information is missing or invalid"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "upload picture to specified album",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "album"
+        ],
+        "operationId": "postPhoto",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "User ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "401": {
+            "description": "Authentication information is missing or invalid"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
+    "/authorize": {
+      "get": {
+        "description": "authorize user by id, password",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "authorizer"
+        ],
+        "parameters": [
+          {
+            "name": "login_info",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "aurhorize ok and returns token",
+            "schema": {
+              "properties": {
+                "schema": {
+                  "$ref": "#/definitions/Token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "authentification failed"
+          }
+        }
+      }
+    },
     "/system/version": {
       "get": {
         "description": "Get API Version",
+        "consumes": [
+          "application/json"
+        ],
         "tags": [
           "system"
         ],
         "responses": {
           "200": {
-            "description": "successful pet response",
+            "description": "api version",
             "schema": {
               "$ref": "#/definitions/Version"
             }
@@ -93,7 +493,49 @@ func init() {
     }
   },
   "definitions": {
+    "Album": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "photos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "url"
+          }
+        }
+      }
+    },
+    "Albums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Album"
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Token": {
+      "type": "string"
+    },
+    "UnauthorizedError": {
+      "description": "Authentication information is missing or invalid"
+    },
     "Version": {
+      "description": "API Version(SemVer)",
       "type": "object",
       "properties": {
         "version": {
@@ -103,9 +545,23 @@ func init() {
       }
     }
   },
+  "securityDefinitions": {
+    "Bearer": {
+      "description": "access token for api publicated by /authorize",
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+    }
+  },
   "tags": [
     {
       "name": "system"
+    },
+    {
+      "name": "album"
+    },
+    {
+      "name": "authorizer"
     }
   ]
 }`))

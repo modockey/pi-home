@@ -8,21 +8,163 @@ info:
 basePath: /v1
 tags:
   - name: "system"
+  - name: "album"
+  - name: "authorizer"
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    in: header
+    name: X-API-Key
+    description: access token for api publicated by /authorize
 paths:
+  /albums:
+    get:
+      tags:
+        - "album"
+      description: get user's albums
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: user's albums
+          schema:
+            $ref: "#/definitions/Albums"
+        401:
+          $ref: "#/definitions/UnauthorizedError"
+    post:
+      tags:
+        - "album"
+      description: create new album
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: create new album success
+          schema:
+            properties:
+              url:
+                type: string
+                format: url
+        401:
+          $ref: "#/definitions/UnauthorizedError"
+        403:
+          description: user not allowed to access this API
+  /albums/{id}:
+    get:
+      description: get specified album's info
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      operationId: getAlbumsById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          type: integer
+          format: int64
+      tags:
+        - "album"
+      responses:
+        200:
+          description: album's info
+        401:
+          $ref: "#/definitions/UnauthorizedError"
+        403:
+          description: user not allowed to access this API
+    post:
+      tags:
+        - "album"
+      description: upload picture to specified album
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      operationId: postPhoto
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: album's info
+        401:
+          $ref: "#/definitions/UnauthorizedError"
+        403:
+          description: user not allowed to access this API
   /system/version:
     get:
       tags:
         - "system"
       description: Get API Version
+      consumes:
+        - application/json
       responses:
         200:
-          description: successful pet response
+          description: api version
           schema:
             $ref: "#/definitions/Version"
+  /authorize:
+    get:
+      tags:
+        - "authorizer"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: login_info
+          schema:
+            $ref: "#/definitions/Login"
+      description: authorize user by id, password
+      responses:
+        200:
+          description: aurhorize ok and returns token
+          schema:
+            properties:
+              schema:
+                $ref: "#/definitions/Token"
+        401:
+          description: authentification failed
 definitions:
   Version:
     type: object
+    description: API Version(SemVer)
     properties:
       version:
         type: string
         format: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+  Albums:
+    type: array
+    items:
+      $ref: "#/definitions/Album"
+  Album:
+    type: object
+    properties:
+      name:
+        type: string
+      owner:
+        type: string
+      photos:
+        type: array
+        items:
+          type: string
+          format: url
+  Token:
+    type: string
+  Login:
+    type: object
+    properties:
+      id:
+        type: string
+      password:
+        type: string
+  UnauthorizedError:
+    description: Authentication information is missing or invalid

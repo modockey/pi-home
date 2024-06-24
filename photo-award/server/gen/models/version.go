@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Version version
+// Version API Version(SemVer)
 //
 // swagger:model Version
 type Version struct {

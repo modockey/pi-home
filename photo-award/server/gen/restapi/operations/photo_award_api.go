@@ -19,6 +19,8 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
+	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/album"
+	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/authorizer"
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/system"
 )
 
@@ -44,9 +46,31 @@ func NewPhotoAwardAPI(spec *loads.Document) *PhotoAwardAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		AlbumGetAlbumsHandler: album.GetAlbumsHandlerFunc(func(params album.GetAlbumsParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation album.GetAlbums has not yet been implemented")
+		}),
+		AuthorizerGetAuthorizeHandler: authorizer.GetAuthorizeHandlerFunc(func(params authorizer.GetAuthorizeParams) middleware.Responder {
+			return middleware.NotImplemented("operation authorizer.GetAuthorize has not yet been implemented")
+		}),
 		SystemGetSystemVersionHandler: system.GetSystemVersionHandlerFunc(func(params system.GetSystemVersionParams) middleware.Responder {
 			return middleware.NotImplemented("operation system.GetSystemVersion has not yet been implemented")
 		}),
+		AlbumPostAlbumsHandler: album.PostAlbumsHandlerFunc(func(params album.PostAlbumsParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation album.PostAlbums has not yet been implemented")
+		}),
+		AlbumGetAlbumsByIDHandler: album.GetAlbumsByIDHandlerFunc(func(params album.GetAlbumsByIDParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation album.GetAlbumsByID has not yet been implemented")
+		}),
+		AlbumPostPhotoHandler: album.PostPhotoHandlerFunc(func(params album.PostPhotoParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation album.PostPhoto has not yet been implemented")
+		}),
+
+		// Applies when the "X-API-Key" header is set
+		BearerAuth: func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (Bearer) X-API-Key from header param [X-API-Key] has not yet been implemented")
+		},
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -83,8 +107,25 @@ type PhotoAwardAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// BearerAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key X-API-Key provided in the header
+	BearerAuth func(string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
+	// AlbumGetAlbumsHandler sets the operation handler for the get albums operation
+	AlbumGetAlbumsHandler album.GetAlbumsHandler
+	// AuthorizerGetAuthorizeHandler sets the operation handler for the get authorize operation
+	AuthorizerGetAuthorizeHandler authorizer.GetAuthorizeHandler
 	// SystemGetSystemVersionHandler sets the operation handler for the get system version operation
 	SystemGetSystemVersionHandler system.GetSystemVersionHandler
+	// AlbumPostAlbumsHandler sets the operation handler for the post albums operation
+	AlbumPostAlbumsHandler album.PostAlbumsHandler
+	// AlbumGetAlbumsByIDHandler sets the operation handler for the get albums by Id operation
+	AlbumGetAlbumsByIDHandler album.GetAlbumsByIDHandler
+	// AlbumPostPhotoHandler sets the operation handler for the post photo operation
+	AlbumPostPhotoHandler album.PostPhotoHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -162,8 +203,27 @@ func (o *PhotoAwardAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.BearerAuth == nil {
+		unregistered = append(unregistered, "XAPIKeyAuth")
+	}
+
+	if o.AlbumGetAlbumsHandler == nil {
+		unregistered = append(unregistered, "album.GetAlbumsHandler")
+	}
+	if o.AuthorizerGetAuthorizeHandler == nil {
+		unregistered = append(unregistered, "authorizer.GetAuthorizeHandler")
+	}
 	if o.SystemGetSystemVersionHandler == nil {
 		unregistered = append(unregistered, "system.GetSystemVersionHandler")
+	}
+	if o.AlbumPostAlbumsHandler == nil {
+		unregistered = append(unregistered, "album.PostAlbumsHandler")
+	}
+	if o.AlbumGetAlbumsByIDHandler == nil {
+		unregistered = append(unregistered, "album.GetAlbumsByIDHandler")
+	}
+	if o.AlbumPostPhotoHandler == nil {
+		unregistered = append(unregistered, "album.PostPhotoHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -180,12 +240,21 @@ func (o *PhotoAwardAPI) ServeErrorFor(operationID string) func(http.ResponseWrit
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *PhotoAwardAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name := range schemes {
+		switch name {
+		case "Bearer":
+			scheme := schemes[name]
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.BearerAuth)
+
+		}
+	}
+	return result
 }
 
 // Authorizer returns the registered authorizer
 func (o *PhotoAwardAPI) Authorizer() runtime.Authorizer {
-	return nil
+	return o.APIAuthorizer
 }
 
 // ConsumersFor gets the consumers for the specified media types.
@@ -256,7 +325,27 @@ func (o *PhotoAwardAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/albums"] = album.NewGetAlbums(o.context, o.AlbumGetAlbumsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/authorize"] = authorizer.NewGetAuthorize(o.context, o.AuthorizerGetAuthorizeHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/system/version"] = system.NewGetSystemVersion(o.context, o.SystemGetSystemVersionHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/albums"] = album.NewPostAlbums(o.context, o.AlbumPostAlbumsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/albums/{id}"] = album.NewGetAlbumsByID(o.context, o.AlbumGetAlbumsByIDHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/albums/{id}"] = album.NewPostPhoto(o.context, o.AlbumPostPhotoHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

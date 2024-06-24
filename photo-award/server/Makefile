@@ -1,11 +1,8 @@
-generate:
-	java -jar openapi-generator-cli.jar generate \
-	-i ../openapi.yaml \
-	-g go-server \
-	-o ./gen \
-	--additional-properties sourceFolder=openapi \
-	--additional-properties outputAsLibrary=true
-	goimports -w ./gen/openapi/
-
 swagger-generate:
 	swagger generate server -t gen -f ../swagger.yaml
+
+run:
+	go run ./gen/cmd/photo-award-server/main.go --port 8000
+
+build:
+	go build -o ./target/photo-award-server.go ./gen/cmd/photo-award-server/main.go 
