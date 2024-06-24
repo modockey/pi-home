@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/security"
 
+	"github.com/modockey/pi-home/photo-award/authorizer"
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations"
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/album"
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/system"
@@ -49,13 +49,10 @@ func configureAPI(api *operations.PhotoAwardAPI) http.Handler {
 
 	api.ServerShutdown = func() {}
 
-	// TODO: ここに何を実装するのか調べる
-	api.BearerAuth = func(token string) (interface{}, error) {
-		return token, nil
-	}
+	api.BearerAuth = authorizer.Authorize
 
 	// TODO: api.BearerAuthからどうやって情報を受け取るのか調べる
-	api.APIAuthorizer = security.Authorized()
+	//api.APIAuthorizer = security.Authorized()
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }
