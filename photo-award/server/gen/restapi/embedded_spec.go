@@ -68,6 +68,14 @@ func init() {
         "tags": [
           "album"
         ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "create new album success",
@@ -148,6 +156,13 @@ func init() {
             "name": "id",
             "in": "path",
             "required": true
+          },
+          {
+            "name": "photo",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Photo"
+            }
           }
         ],
         "responses": {
@@ -254,6 +269,18 @@ func init() {
         }
       }
     },
+    "Photo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "photo": {
+          "type": "string",
+          "format": "binary"
+        }
+      }
+    },
     "Token": {
       "type": "string"
     },
@@ -275,7 +302,7 @@ func init() {
     "Bearer": {
       "description": "access token for api publicated by /authorize",
       "type": "apiKey",
-      "name": "X-API-Key",
+      "name": "Authorization",
       "in": "header"
     }
   },
@@ -342,6 +369,14 @@ func init() {
         "tags": [
           "album"
         ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "create new album success",
@@ -422,6 +457,13 @@ func init() {
             "name": "id",
             "in": "path",
             "required": true
+          },
+          {
+            "name": "photo",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Photo"
+            }
           }
         ],
         "responses": {
@@ -528,6 +570,18 @@ func init() {
         }
       }
     },
+    "Photo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "photo": {
+          "type": "string",
+          "format": "binary"
+        }
+      }
+    },
     "Token": {
       "type": "string"
     },
@@ -549,7 +603,7 @@ func init() {
     "Bearer": {
       "description": "access token for api publicated by /authorize",
       "type": "apiKey",
-      "name": "X-API-Key",
+      "name": "Authorization",
       "in": "header"
     }
   },

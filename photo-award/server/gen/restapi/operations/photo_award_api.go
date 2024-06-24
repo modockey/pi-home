@@ -65,9 +65,9 @@ func NewPhotoAwardAPI(spec *loads.Document) *PhotoAwardAPI {
 			return middleware.NotImplemented("operation album.PostPhoto has not yet been implemented")
 		}),
 
-		// Applies when the "X-API-Key" header is set
+		// Applies when the "Authorization" header is set
 		BearerAuth: func(token string) (interface{}, error) {
-			return nil, errors.NotImplemented("api key auth (Bearer) X-API-Key from header param [X-API-Key] has not yet been implemented")
+			return nil, errors.NotImplemented("api key auth (Bearer) Authorization from header param [Authorization] has not yet been implemented")
 		},
 		// default authorizer is authorized meaning no requests are blocked
 		APIAuthorizer: security.Authorized(),
@@ -108,7 +108,7 @@ type PhotoAwardAPI struct {
 	JSONProducer runtime.Producer
 
 	// BearerAuth registers a function that takes a token and returns a principal
-	// it performs authentication based on an api key X-API-Key provided in the header
+	// it performs authentication based on an api key Authorization provided in the header
 	BearerAuth func(string) (interface{}, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
@@ -204,7 +204,7 @@ func (o *PhotoAwardAPI) Validate() error {
 	}
 
 	if o.BearerAuth == nil {
-		unregistered = append(unregistered, "XAPIKeyAuth")
+		unregistered = append(unregistered, "AuthorizationAuth")
 	}
 
 	if o.AlbumGetAlbumsHandler == nil {
