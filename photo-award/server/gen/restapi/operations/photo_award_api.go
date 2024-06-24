@@ -19,6 +19,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
+	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/album"
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/system"
 )
 
@@ -44,8 +45,20 @@ func NewPhotoAwardAPI(spec *loads.Document) *PhotoAwardAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		AlbumGetAlbumsHandler: album.GetAlbumsHandlerFunc(func(params album.GetAlbumsParams) middleware.Responder {
+			return middleware.NotImplemented("operation album.GetAlbums has not yet been implemented")
+		}),
+		AlbumGetAlbumsIDHandler: album.GetAlbumsIDHandlerFunc(func(params album.GetAlbumsIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation album.GetAlbumsID has not yet been implemented")
+		}),
 		SystemGetSystemVersionHandler: system.GetSystemVersionHandlerFunc(func(params system.GetSystemVersionParams) middleware.Responder {
 			return middleware.NotImplemented("operation system.GetSystemVersion has not yet been implemented")
+		}),
+		AlbumPostAlbumsHandler: album.PostAlbumsHandlerFunc(func(params album.PostAlbumsParams) middleware.Responder {
+			return middleware.NotImplemented("operation album.PostAlbums has not yet been implemented")
+		}),
+		AlbumPostAlbumsIDHandler: album.PostAlbumsIDHandlerFunc(func(params album.PostAlbumsIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation album.PostAlbumsID has not yet been implemented")
 		}),
 	}
 }
@@ -83,8 +96,16 @@ type PhotoAwardAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// AlbumGetAlbumsHandler sets the operation handler for the get albums operation
+	AlbumGetAlbumsHandler album.GetAlbumsHandler
+	// AlbumGetAlbumsIDHandler sets the operation handler for the get albums ID operation
+	AlbumGetAlbumsIDHandler album.GetAlbumsIDHandler
 	// SystemGetSystemVersionHandler sets the operation handler for the get system version operation
 	SystemGetSystemVersionHandler system.GetSystemVersionHandler
+	// AlbumPostAlbumsHandler sets the operation handler for the post albums operation
+	AlbumPostAlbumsHandler album.PostAlbumsHandler
+	// AlbumPostAlbumsIDHandler sets the operation handler for the post albums ID operation
+	AlbumPostAlbumsIDHandler album.PostAlbumsIDHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -162,8 +183,20 @@ func (o *PhotoAwardAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.AlbumGetAlbumsHandler == nil {
+		unregistered = append(unregistered, "album.GetAlbumsHandler")
+	}
+	if o.AlbumGetAlbumsIDHandler == nil {
+		unregistered = append(unregistered, "album.GetAlbumsIDHandler")
+	}
 	if o.SystemGetSystemVersionHandler == nil {
 		unregistered = append(unregistered, "system.GetSystemVersionHandler")
+	}
+	if o.AlbumPostAlbumsHandler == nil {
+		unregistered = append(unregistered, "album.PostAlbumsHandler")
+	}
+	if o.AlbumPostAlbumsIDHandler == nil {
+		unregistered = append(unregistered, "album.PostAlbumsIDHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -256,7 +289,23 @@ func (o *PhotoAwardAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/albums"] = album.NewGetAlbums(o.context, o.AlbumGetAlbumsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/albums/[id]"] = album.NewGetAlbumsID(o.context, o.AlbumGetAlbumsIDHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/system/version"] = system.NewGetSystemVersion(o.context, o.SystemGetSystemVersionHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/albums"] = album.NewPostAlbums(o.context, o.AlbumPostAlbumsHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/albums/[id]"] = album.NewPostAlbumsID(o.context, o.AlbumPostAlbumsIDHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

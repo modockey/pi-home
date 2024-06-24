@@ -8,7 +8,53 @@ info:
 basePath: /v1
 tags:
   - name: "system"
+  - name: "album"
 paths:
+  /albums:
+    get:
+      tags:
+        - "album"
+      description: get user's albums
+      responses:
+        200:
+          description: user's albums
+          schema:
+            $ref: "#/definitions/Albums"
+        403:
+          description: user not allowed to access this API
+    post:
+      tags:
+        - "album"
+      description: create new album
+      responses:
+        200:
+          description: create new album success
+          schema:
+            properties:
+              url:
+                type: string
+                format: url
+        403:
+          description: user not allowed to access this API
+  /albums/[id]:
+    get:
+      tags:
+        - "album"
+      description: get specified album's info
+      responses:
+        200:
+          description: album's info
+        403:
+          description: user not allowed to access this API
+    post:
+      tags:
+        - "album"
+      description: upload picture to specified album
+      responses:
+        200:
+          description: album's info
+        403:
+          description: user not allowed to access this API
   /system/version:
     get:
       tags:
@@ -16,13 +62,30 @@ paths:
       description: Get API Version
       responses:
         200:
-          description: successful pet response
+          description: api version
           schema:
             $ref: "#/definitions/Version"
 definitions:
   Version:
     type: object
+    description: API Version(SemVer)
     properties:
       version:
         type: string
         format: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+  Albums:
+    type: array
+    items:
+      $ref: "#/definitions/Album"
+  Album:
+    type: object
+    properties:
+      name:
+        type: string
+      owner:
+        type: string
+      photos:
+        type: array
+        items:
+          type: string
+          format: url

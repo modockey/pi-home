@@ -12,27 +12,33 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Version API Version(SemVer)
+// Album album
 //
-// swagger:model Version
-type Version struct {
+// swagger:model Album
+type Album struct {
 
-	// version
-	Version string `json:"version,omitempty"`
+	// name
+	Name string `json:"name,omitempty"`
+
+	// owner
+	Owner string `json:"owner,omitempty"`
+
+	// photos
+	Photos []string `json:"photos"`
 }
 
-// Validate validates this version
-func (m *Version) Validate(formats strfmt.Registry) error {
+// Validate validates this album
+func (m *Album) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this version based on context it is used
-func (m *Version) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this album based on context it is used
+func (m *Album) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *Version) MarshalBinary() ([]byte, error) {
+func (m *Album) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -40,8 +46,8 @@ func (m *Version) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Version) UnmarshalBinary(b []byte) error {
-	var res Version
+func (m *Album) UnmarshalBinary(b []byte) error {
+	var res Album
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -29,6 +29,77 @@ func init() {
   },
   "basePath": "/v1",
   "paths": {
+    "/albums": {
+      "get": {
+        "description": "get user's albums",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "user's albums",
+            "schema": {
+              "$ref": "#/definitions/Albums"
+            }
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      },
+      "post": {
+        "description": "create new album",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "create new album success",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
+    "/albums/[id]": {
+      "get": {
+        "description": "get specified album's info",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      },
+      "post": {
+        "description": "upload picture to specified album",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
     "/system/version": {
       "get": {
         "description": "Get API Version",
@@ -37,7 +108,7 @@ func init() {
         ],
         "responses": {
           "200": {
-            "description": "successful pet response",
+            "description": "api version",
             "schema": {
               "$ref": "#/definitions/Version"
             }
@@ -47,7 +118,32 @@ func init() {
     }
   },
   "definitions": {
+    "Album": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "photos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "url"
+          }
+        }
+      }
+    },
+    "Albums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Album"
+      }
+    },
     "Version": {
+      "description": "API Version(SemVer)",
       "type": "object",
       "properties": {
         "version": {
@@ -60,6 +156,9 @@ func init() {
   "tags": [
     {
       "name": "system"
+    },
+    {
+      "name": "album"
     }
   ]
 }`))
@@ -75,6 +174,77 @@ func init() {
   },
   "basePath": "/v1",
   "paths": {
+    "/albums": {
+      "get": {
+        "description": "get user's albums",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "user's albums",
+            "schema": {
+              "$ref": "#/definitions/Albums"
+            }
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      },
+      "post": {
+        "description": "create new album",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "create new album success",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
+    "/albums/[id]": {
+      "get": {
+        "description": "get specified album's info",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      },
+      "post": {
+        "description": "upload picture to specified album",
+        "tags": [
+          "album"
+        ],
+        "responses": {
+          "200": {
+            "description": "album's info"
+          },
+          "403": {
+            "description": "user not allowed to access this API"
+          }
+        }
+      }
+    },
     "/system/version": {
       "get": {
         "description": "Get API Version",
@@ -83,7 +253,7 @@ func init() {
         ],
         "responses": {
           "200": {
-            "description": "successful pet response",
+            "description": "api version",
             "schema": {
               "$ref": "#/definitions/Version"
             }
@@ -93,7 +263,32 @@ func init() {
     }
   },
   "definitions": {
+    "Album": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "photos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "url"
+          }
+        }
+      }
+    },
+    "Albums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Album"
+      }
+    },
     "Version": {
+      "description": "API Version(SemVer)",
       "type": "object",
       "properties": {
         "version": {
@@ -106,6 +301,9 @@ func init() {
   "tags": [
     {
       "name": "system"
+    },
+    {
+      "name": "album"
     }
   ]
 }`))

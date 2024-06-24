@@ -17,7 +17,7 @@ import (
 const GetSystemVersionOKCode int = 200
 
 /*
-GetSystemVersionOK successful pet response
+GetSystemVersionOK api version
 
 swagger:response getSystemVersionOK
 */
