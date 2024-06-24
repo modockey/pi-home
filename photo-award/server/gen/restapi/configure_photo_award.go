@@ -8,10 +8,13 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/security"
 
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations"
+	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/album"
 	"github.com/modockey/pi-home/photo-award/gen/restapi/operations/system"
+
+	"github.com/modockey/pi-home/photo-award/handler"
 )
 
 //go:generate swagger generate server --target ../../gen --name PhotoAward --spec ../../../swagger.yaml --principal interface{}
@@ -38,15 +41,21 @@ func configureAPI(api *operations.PhotoAwardAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.SystemGetSystemVersionHandler == nil {
-		api.SystemGetSystemVersionHandler = system.GetSystemVersionHandlerFunc(func(params system.GetSystemVersionParams) middleware.Responder {
-			return middleware.NotImplemented("operation system.GetSystemVersion has not yet been implemented")
-		})
-	}
+	api.SystemGetSystemVersionHandler = system.GetSystemVersionHandlerFunc(handler.GetSystemVersionHandler)
+
+	api.AlbumGetAlbumsHandler = album.GetAlbumsHandlerFunc(handler.GetAlbumsHandler)
 
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}
+
+	// TODO: ここに何を実装するのか調べる
+	api.BearerAuth = func(token string) (interface{}, error) {
+		return token, nil
+	}
+
+	// TODO: api.BearerAuthからどうやって情報を受け取るのか調べる
+	api.APIAuthorizer = security.Authorized()
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }

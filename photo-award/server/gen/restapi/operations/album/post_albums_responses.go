@@ -56,6 +56,31 @@ func (o *PostAlbumsOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
+// PostAlbumsUnauthorizedCode is the HTTP code returned for type PostAlbumsUnauthorized
+const PostAlbumsUnauthorizedCode int = 401
+
+/*
+PostAlbumsUnauthorized Authentication information is missing or invalid
+
+swagger:response postAlbumsUnauthorized
+*/
+type PostAlbumsUnauthorized struct {
+}
+
+// NewPostAlbumsUnauthorized creates PostAlbumsUnauthorized with default headers values
+func NewPostAlbumsUnauthorized() *PostAlbumsUnauthorized {
+
+	return &PostAlbumsUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *PostAlbumsUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
 // PostAlbumsForbiddenCode is the HTTP code returned for type PostAlbumsForbidden
 const PostAlbumsForbiddenCode int = 403
 

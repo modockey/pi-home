@@ -61,27 +61,27 @@ func (o *GetAlbumsOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pro
 	}
 }
 
-// GetAlbumsForbiddenCode is the HTTP code returned for type GetAlbumsForbidden
-const GetAlbumsForbiddenCode int = 403
+// GetAlbumsUnauthorizedCode is the HTTP code returned for type GetAlbumsUnauthorized
+const GetAlbumsUnauthorizedCode int = 401
 
 /*
-GetAlbumsForbidden user not allowed to access this API
+GetAlbumsUnauthorized Authentication information is missing or invalid
 
-swagger:response getAlbumsForbidden
+swagger:response getAlbumsUnauthorized
 */
-type GetAlbumsForbidden struct {
+type GetAlbumsUnauthorized struct {
 }
 
-// NewGetAlbumsForbidden creates GetAlbumsForbidden with default headers values
-func NewGetAlbumsForbidden() *GetAlbumsForbidden {
+// NewGetAlbumsUnauthorized creates GetAlbumsUnauthorized with default headers values
+func NewGetAlbumsUnauthorized() *GetAlbumsUnauthorized {
 
-	return &GetAlbumsForbidden{}
+	return &GetAlbumsUnauthorized{}
 }
 
 // WriteResponse to the client
-func (o *GetAlbumsForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *GetAlbumsUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(403)
+	rw.WriteHeader(401)
 }
