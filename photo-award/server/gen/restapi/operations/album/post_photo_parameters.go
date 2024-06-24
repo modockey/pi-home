@@ -9,9 +9,13 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
+	"github.com/modockey/pi-home/photo-award/gen/models"
 )
 
 // NewPostPhotoParams creates a new PostPhotoParams object
@@ -36,6 +40,10 @@ type PostPhotoParams struct {
 	  In: path
 	*/
 	ID int64
+	/*
+	  In: body
+	*/
+	Photo *models.Photo
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -50,6 +58,28 @@ func (o *PostPhotoParams) BindRequest(r *http.Request, route *middleware.Matched
 	rID, rhkID, _ := route.Params.GetOK("id")
 	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
 		res = append(res, err)
+	}
+
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body models.Photo
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			res = append(res, errors.NewParseError("photo", "body", "", err))
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			ctx := validate.WithOperationRequest(r.Context())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.Photo = &body
+			}
+		}
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

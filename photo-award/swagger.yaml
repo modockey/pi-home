@@ -14,7 +14,7 @@ securityDefinitions:
   Bearer:
     type: apiKey
     in: header
-    name: X-API-Key
+    name: Authorization
     description: access token for api publicated by /authorize
 paths:
   /albums:
@@ -37,6 +37,11 @@ paths:
       tags:
         - "album"
       description: create new album
+      parameters:
+        - name: name
+          in: query
+          type: string
+          required: true
       consumes:
         - application/json
       security:
@@ -93,6 +98,10 @@ paths:
           required: true
           type: integer
           format: int64
+        - in: body
+          name: photo
+          schema:
+            $ref: "#/definitions/Photo"
       responses:
         200:
           description: album's info
@@ -157,6 +166,14 @@ definitions:
         items:
           type: string
           format: url
+  Photo:
+    type: object
+    properties:
+      name:
+        type: string
+      photo:
+        type: string
+        format: binary
   Token:
     type: string
   Login:
